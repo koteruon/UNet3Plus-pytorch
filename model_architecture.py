@@ -1,4 +1,6 @@
+import netron
 import torch
+import torch.onnx
 from torchvision import models
 from torchviz import make_dot
 
@@ -14,9 +16,10 @@ model = UNet3Plus(21, 64, 2, encoder, use_cgm=False, dropout=0.3, transpose_fina
 dummy_input = torch.randn(16, 3, 512, 512)
 
 # 將模型的架構可視化為圖片
-dot = make_dot(
-    model(dummy_input)["final_pred"], params=dict(model.named_parameters()), show_attrs=True, show_saved=True
-)
+modelData = "./model.pth"
 
-# 保存圖片
-dot.render("model_architecture", format="png", cleanup=True)
+# 輸出模型
+torch.onnx.export(model, dummy_input, modelData)
+
+# 顯示
+netron.start(modelData)
