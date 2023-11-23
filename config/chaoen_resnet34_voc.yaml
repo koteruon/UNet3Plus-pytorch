@@ -19,7 +19,7 @@ train:
   optimizer: adamw
   accum_steps: 4
   resume: ''
-  save_name: u3p_resnet34_voc_focal
+  save_name: u3p_resnet34_voc_focal_20231123
   loss_type: focal
   warmup_iters: 3000
 
