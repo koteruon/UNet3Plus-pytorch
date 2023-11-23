@@ -10,7 +10,7 @@ data:
   num_workers: 0
   batch_size: 16
   max_training_samples: -1
-  
+
 train:
   seed: 42
   epochs: 52
@@ -28,4 +28,4 @@ train:
     log_dir: ./runs
 
 
-  
+
