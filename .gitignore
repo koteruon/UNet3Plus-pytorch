@@ -13,5 +13,6 @@ VOCdevkit
 __pycache__
 
 .vscode
+model.pth
 
 tensorboard --logdir=runs
