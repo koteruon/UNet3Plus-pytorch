@@ -155,7 +155,7 @@ class Trainer:
     def warmup(self):
         ni = self.global_iter
 
-        warmup_iters = max(self.cfg.warmup_iters, len(self.train_loader.dataset) * 3)
+        warmup_iters = self.cfg.warmup_iters
         if ni <= warmup_iters:
             xi = [0, warmup_iters]  # x interp
             for j, x in enumerate(self.optimizer.param_groups):

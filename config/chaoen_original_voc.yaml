@@ -1,0 +1,31 @@
+model:
+  encoder: default
+  skip_ch: 64
+  aux_losses: 2
+  pretrained: True
+
+data:
+  type: voc2012_aug
+  num_classes: 21
+  num_workers: 0
+  batch_size: 4
+  max_training_samples: 100
+  crop_size: 320
+
+train:
+  seed: 42
+  epochs: 52
+  lr: 0.0002
+  weight_decay: 0.0005
+  optimizer: adamw
+  accum_steps: 4
+  save_name: original_voc
+  loss_type: u3p
+  warmup_iters: 3000
+
+  logger:
+    use_tensorboard: True
+    log_dir: ./runs
+
+
+

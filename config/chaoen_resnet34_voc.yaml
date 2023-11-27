@@ -19,9 +19,9 @@ train:
   optimizer: adamw
   accum_steps: 4
   resume: ''
-  save_name: u3p_resnet34_voc_focal_20231123
+  save_name: u3p_resnet34_voc_focal_epochs_100_no_warm_up
   loss_type: focal
-  warmup_iters: 3000
+  warmup_iters: 0
 
   logger:
     use_tensorboard: True
