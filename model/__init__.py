@@ -55,7 +55,8 @@ class U3PResNetEncoder(nn.Module):
         self.channels = [3] + cfg["channels"]
 
     def forward(self, x):
-        self.backbone.apply(weight_add_noise)
+        if self.training:
+            self.backbone.apply(weight_add_noise)
         out = self.backbone(x)
         for ii, compress in enumerate(self.compress_convs):
             out[f"layer{ii}"] = compress(out[f"layer{ii}"])
