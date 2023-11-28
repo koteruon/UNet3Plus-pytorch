@@ -2,7 +2,7 @@ model:
   encoder: default
   skip_ch: 64
   aux_losses: 2
-  pretrained: True
+  weights: None
 
 data:
   type: voc2012_aug
