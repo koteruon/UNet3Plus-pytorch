@@ -4,7 +4,7 @@ model:
   aux_losses: 2
   weights: None
   noise_seed: 42
-  n_tr: 0.02
+  n_tr: 0.0
 
 data:
   type: voc2012_aug

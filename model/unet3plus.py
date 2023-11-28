@@ -140,7 +140,8 @@ class U3PDecoder(nn.Module):
         enc_map_list = enc_map_list[::-1]
         for ii, layer_key in enumerate(self.decoders):
             layer = self.decoders[layer_key]
-            layer.apply(weight_add_noise)
+            if self.training:
+                layer.apply(weight_add_noise)
             if ii == 0:
                 dec_map_list.append(layer(enc_map_list[0]))
                 continue
@@ -200,7 +201,8 @@ class UNet3Plus(nn.Module):
         de_out = self.decoder(self.encoder(x))
         have_obj = 1
 
-        self.head.apply(weight_add_noise)
+        if self.training:
+            self.head.apply(weight_add_noise)
         pred = self.resize(self.head(de_out[-1]), h, w)
 
         if self.training:
