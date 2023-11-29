@@ -1,7 +1,7 @@
 accum_steps: 4
 aux_weight: 0.4
 device: cuda
-epochs: 52
+epochs: 468
 logger:
   log_dir: ./runs
   tensorboard: {}
