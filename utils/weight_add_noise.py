@@ -15,18 +15,16 @@ def weights_add_noise(m):
     random.seed(cfg.model.noise_seed)
 
     classname = m.__class__.__name__
-    if classname.find("Conv") != -1:
-        sigma_delta_W_tr = cfg.model.n_tr * m.weight.abs().max()
-        delta_Gij_l = torch.randn_like(m.weight) * sigma_delta_W_tr
+    if classname.find("Conv") != -1 or classname.find("Linear") != -1 or classname.find("BatchNorm") != -1:
+        channel_max_values = (
+            cfg.model.n_tr * torch.max(torch.abs(m.weight.view(*m.weight.size()[:-2], -1)), dim=-1).values
+        )
+        expand_dims = m.weight.size()[:-2] + (1,) * (len(m.weight.size()) - 2)
+        sigma_delta_W_tr = channel_max_values.view(expand_dims).expand(m.weight.size())
+        delta_Gij_l = torch.normal(mean=0.0, std=sigma_delta_W_tr)
         m.weight.data = m.weight.data + delta_Gij_l
-    elif classname.find("Linear") != -1:
-        sigma_delta_W_tr = cfg.model.n_tr * m.weight.abs().max()
-        delta_Gij_l = torch.randn_like(m.weight) * sigma_delta_W_tr
-        m.weight.data = m.weight.data + delta_Gij_l
-    elif classname.find("BatchNorm") != -1:
-        sigma_delta_W_tr = cfg.model.n_tr * m.weight.abs().max()
-        delta_Gij_l = torch.randn_like(m.weight) * sigma_delta_W_tr
-        m.weight.data = m.weight.data + delta_Gij_l
+    else:
+        raise Exception
 
     torch.cuda.manual_seed_all(cfg.train.seed)
     torch.manual_seed(cfg.train.seed)

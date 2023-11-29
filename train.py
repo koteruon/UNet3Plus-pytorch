@@ -118,7 +118,6 @@ class Trainer:
         for i, batch in pbar:
             self.warmup()
             imgs, masks = batch[0].to(device), batch[1].to(device, dtype=torch.long)
-            self.global_iter += batch_size
             with amp.autocast():
                 preds = model(imgs)
                 loss, batch_loss_dict = self.criterion(preds, masks)
@@ -128,6 +127,7 @@ class Trainer:
                 self.scaler.step(self.optimizer)
                 self.scaler.update()
                 self.optimizer.zero_grad()
+        self.global_iter += 1
         pbar.close()
 
     def end_train_epoch(self):
