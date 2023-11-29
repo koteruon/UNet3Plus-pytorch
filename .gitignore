@@ -5,6 +5,7 @@
 temp.ipynb
 
 runs/*
+runs_compare/*
 runs_back_up/*
 checkpoints
 logs
