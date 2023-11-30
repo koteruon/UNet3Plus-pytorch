@@ -23,6 +23,18 @@ def weights_add_noise(m):
         sigma_delta_W_tr = channel_max_values.view(expand_dims).expand(m.weight.size())
         delta_Gij_l = torch.normal(mean=0.0, std=sigma_delta_W_tr)
         m.weight.data = m.weight.data + delta_Gij_l
+        with open("weight_track.csv", "a") as f:
+            if channel_max_values.dim() == 0:
+                list_as_string = channel_max_values.cpu().detach().numpy().tolist()
+            elif channel_max_values.dim() == 1:
+                list_as_string = ",".join(map(str, channel_max_values.cpu().detach().numpy().tolist()))
+            elif channel_max_values.dim() == 2:
+                list_as_string = ",".join(
+                    [",".join(map(str, row)) for row in channel_max_values.cpu().detach().numpy().tolist()]
+                )
+            else:
+                raise Exception
+            f.write(f"{m.weight._cdata},{list_as_string}")
     else:
         raise Exception
 
