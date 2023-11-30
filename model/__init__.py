@@ -1,8 +1,13 @@
+import copy
+import random
+
+import numpy as np
 import torch
 import torch.nn as nn
 from torchvision.models import ResNet, resnet18, resnet34, resnet50, resnet101
 from torchvision.models.feature_extraction import create_feature_extractor, get_graph_node_names
 
+from config.config import cfg
 from utils.weight_add_noise import weight_add_noise
 from utils.weight_init import weight_init
 
@@ -55,12 +60,41 @@ class U3PResNetEncoder(nn.Module):
         self.channels = [3] + cfg["channels"]
 
     def forward(self, x):
-        if self.training:
+        ori_backbon = copy.deepcopy(self.backbone)
+        if cfg.model.fig == "A":
+            if self.training:
+                torch.cuda.manual_seed_all(cfg.model.noise_seed)
+                torch.manual_seed(cfg.model.noise_seed)
+                np.random.seed(cfg.model.noise_seed)
+                random.seed(cfg.model.noise_seed)
+
+                self.backbone.apply(weight_add_noise)
+
+            torch.cuda.manual_seed_all(cfg.train.seed)
+            torch.manual_seed(cfg.train.seed)
+            np.random.seed(cfg.train.seed)
+            random.seed(cfg.train.seed)
+
+        elif cfg.model.fig == "C":
+            if self.training:
+                torch.cuda.manual_seed_all(cfg.model.noise_seed)
+                torch.manual_seed(cfg.model.noise_seed)
+                np.random.seed(cfg.model.noise_seed)
+                random.seed(cfg.model.noise_seed)
+            else:
+                torch.cuda.manual_seed_all(cfg.train.seed)
+                torch.manual_seed(cfg.train.seed)
+                np.random.seed(cfg.train.seed)
+                random.seed(cfg.train.seed)
+
             self.backbone.apply(weight_add_noise)
+
         out = self.backbone(x)
         for ii, compress in enumerate(self.compress_convs):
             out[f"layer{ii}"] = compress(out[f"layer{ii}"])
         out = [v for _, v in out.items()]
+
+        self.backbone = ori_backbon
         return out
 
 

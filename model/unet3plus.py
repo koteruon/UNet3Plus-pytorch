@@ -1,5 +1,7 @@
+import copy
 import os
 import os.path as osp
+import random
 import sys
 from typing import List
 
@@ -7,6 +9,8 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+
+from config.config import cfg
 
 sys.path.append(osp.dirname(osp.dirname(__file__)))
 
@@ -140,12 +144,40 @@ class U3PDecoder(nn.Module):
         enc_map_list = enc_map_list[::-1]
         for ii, layer_key in enumerate(self.decoders):
             layer = self.decoders[layer_key]
-            if self.training:
-                layer.apply(weight_add_noise)
+            ori_layer = copy.deepcopy(layer)
+            if cfg.model.fig == "A":
+                if self.training:
+                    torch.cuda.manual_seed_all(cfg.model.noise_seed)
+                    torch.manual_seed(cfg.model.noise_seed)
+                    np.random.seed(cfg.model.noise_seed)
+                    random.seed(cfg.model.noise_seed)
+
+                    layer.apply(weight_add_noise)
+
+                torch.cuda.manual_seed_all(cfg.train.seed)
+                torch.manual_seed(cfg.train.seed)
+                np.random.seed(cfg.train.seed)
+                random.seed(cfg.train.seed)
+
+            elif cfg.model.fig == "C":
+                if self.training:
+                    torch.cuda.manual_seed_all(cfg.model.noise_seed)
+                    torch.manual_seed(cfg.model.noise_seed)
+                    np.random.seed(cfg.model.noise_seed)
+                    random.seed(cfg.model.noise_seed)
+                else:
+                    torch.cuda.manual_seed_all(cfg.train.seed)
+                    torch.manual_seed(cfg.train.seed)
+                    np.random.seed(cfg.train.seed)
+                    random.seed(cfg.train.seed)
+
+            layer.apply(weight_add_noise)
+
             if ii == 0:
                 dec_map_list.append(layer(enc_map_list[0]))
                 continue
             dec_map_list.append(layer(enc_map_list[ii:], dec_map_list))
+            layer = ori_layer
         return dec_map_list
 
 
@@ -201,9 +233,38 @@ class UNet3Plus(nn.Module):
         de_out = self.decoder(self.encoder(x))
         have_obj = 1
 
-        if self.training:
+        ori_head = copy.deepcopy(self.head)
+        if cfg.model.fig == "A":
+            if self.training:
+                torch.cuda.manual_seed_all(cfg.model.noise_seed)
+                torch.manual_seed(cfg.model.noise_seed)
+                np.random.seed(cfg.model.noise_seed)
+                random.seed(cfg.model.noise_seed)
+
+                self.head.apply(weight_add_noise)
+
+            torch.cuda.manual_seed_all(cfg.train.seed)
+            torch.manual_seed(cfg.train.seed)
+            np.random.seed(cfg.train.seed)
+            random.seed(cfg.train.seed)
+
+        elif cfg.model.fig == "C":
+            if self.training:
+                torch.cuda.manual_seed_all(cfg.model.noise_seed)
+                torch.manual_seed(cfg.model.noise_seed)
+                np.random.seed(cfg.model.noise_seed)
+                random.seed(cfg.model.noise_seed)
+            else:
+                torch.cuda.manual_seed_all(cfg.train.seed)
+                torch.manual_seed(cfg.train.seed)
+                np.random.seed(cfg.train.seed)
+                random.seed(cfg.train.seed)
+
             self.head.apply(weight_add_noise)
+
         pred = self.resize(self.head(de_out[-1]), h, w)
+
+        self.head = ori_head
 
         if self.training:
             pred = {"final_pred": pred}

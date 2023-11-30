@@ -6,6 +6,8 @@ model:
   weights: None
   noise_seed: 42
   n_tr: 0.02
+  alpha: 2.0
+  fig: A
 
 data:
   type: voc2012_aug

@@ -12,6 +12,8 @@ cfg.model.aux_losses = 2
 cfg.model.dropout = 0.3
 cfg.model.noise_seed = 42
 cfg.model.n_tr = 0.02
+cfg.model.alpha = 2.0
+cfg.model.fig = "A"
 
 # DATA
 cfg.data = CN()
