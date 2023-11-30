@@ -94,6 +94,7 @@ class U3PResNetEncoder(nn.Module):
             out[f"layer{ii}"] = compress(out[f"layer{ii}"])
         out = [v for _, v in out.items()]
 
+        del self.backbone
         self.backbone = ori_backbon
         return out
 

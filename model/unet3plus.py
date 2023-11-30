@@ -177,6 +177,8 @@ class U3PDecoder(nn.Module):
                 dec_map_list.append(layer(enc_map_list[0]))
                 continue
             dec_map_list.append(layer(enc_map_list[ii:], dec_map_list))
+
+            del layer
             layer = ori_layer
         return dec_map_list
 
@@ -264,6 +266,7 @@ class UNet3Plus(nn.Module):
 
         pred = self.resize(self.head(de_out[-1]), h, w)
 
+        del self.head
         self.head = ori_head
 
         if self.training:
