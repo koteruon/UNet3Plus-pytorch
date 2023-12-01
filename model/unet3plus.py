@@ -15,7 +15,9 @@ from config.config import cfg
 sys.path.append(osp.dirname(osp.dirname(__file__)))
 
 from utils.weight_add_noise import weight_add_noise
+from utils.weight_clone import weight_clone
 from utils.weight_init import weight_init
+from utils.weight_recover import weight_recover
 
 
 def autopad(k, p=None):  # kernel, padding
@@ -144,7 +146,7 @@ class U3PDecoder(nn.Module):
         enc_map_list = enc_map_list[::-1]
         for ii, layer_key in enumerate(self.decoders):
             layer = self.decoders[layer_key]
-            ori_layer = copy.deepcopy(layer)
+            layer.apply(weight_clone)
             if cfg.model.fig == "A":
                 if self.training:
                     torch.cuda.manual_seed_all(cfg.model.noise_seed)
@@ -178,8 +180,7 @@ class U3PDecoder(nn.Module):
                 continue
             dec_map_list.append(layer(enc_map_list[ii:], dec_map_list))
 
-            del layer
-            layer = ori_layer
+            layer.apply(weight_recover)
         return dec_map_list
 
 
@@ -235,7 +236,7 @@ class UNet3Plus(nn.Module):
         de_out = self.decoder(self.encoder(x))
         have_obj = 1
 
-        ori_head = copy.deepcopy(self.head)
+        self.head.apply(weight_clone)
         if cfg.model.fig == "A":
             if self.training:
                 torch.cuda.manual_seed_all(cfg.model.noise_seed)
@@ -266,8 +267,7 @@ class UNet3Plus(nn.Module):
 
         pred = self.resize(self.head(de_out[-1]), h, w)
 
-        del self.head
-        self.head = ori_head
+        self.head.apply(weight_recover)
 
         if self.training:
             pred = {"final_pred": pred}

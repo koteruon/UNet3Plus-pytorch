@@ -9,7 +9,9 @@ from torchvision.models.feature_extraction import create_feature_extractor, get_
 
 from config.config import cfg
 from utils.weight_add_noise import weight_add_noise
+from utils.weight_clone import weight_clone
 from utils.weight_init import weight_init
+from utils.weight_recover import weight_recover
 
 from .unet3plus import UNet3Plus
 
@@ -60,7 +62,7 @@ class U3PResNetEncoder(nn.Module):
         self.channels = [3] + cfg["channels"]
 
     def forward(self, x):
-        ori_backbon = copy.deepcopy(self.backbone)
+        self.backbone.apply(weight_clone)
         if cfg.model.fig == "A":
             if self.training:
                 torch.cuda.manual_seed_all(cfg.model.noise_seed)
@@ -94,8 +96,7 @@ class U3PResNetEncoder(nn.Module):
             out[f"layer{ii}"] = compress(out[f"layer{ii}"])
         out = [v for _, v in out.items()]
 
-        del self.backbone
-        self.backbone = ori_backbon
+        self.backbone.apply(weight_recover)
         return out
 
 
