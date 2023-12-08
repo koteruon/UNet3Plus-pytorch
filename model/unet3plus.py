@@ -143,43 +143,43 @@ class U3PDecoder(nn.Module):
     def forward(self, enc_map_list: List[torch.Tensor]):
         dec_map_list = []
         enc_map_list = enc_map_list[::-1]
-        for ii, layer_key in enumerate(self.decoders):
-            layer = self.decoders[layer_key]
-            layer.apply(weight_clone)
-            if cfg.model.fig == "A":
-                if self.training:
-                    torch.cuda.manual_seed_all(cfg.model.noise_seed)
-                    torch.manual_seed(cfg.model.noise_seed)
-                    np.random.seed(cfg.model.noise_seed)
-                    random.seed(cfg.model.noise_seed)
+        self.decoders.apply(weight_clone)
+        if cfg.model.fig == "A":
+            if self.training:
+                torch.cuda.manual_seed_all(cfg.model.noise_seed)
+                torch.manual_seed(cfg.model.noise_seed)
+                np.random.seed(cfg.model.noise_seed)
+                random.seed(cfg.model.noise_seed)
 
-                    layer.apply(weight_add_noise)
+                self.decoders.apply(weight_add_noise)
 
+            torch.cuda.manual_seed_all(cfg.train.seed)
+            torch.manual_seed(cfg.train.seed)
+            np.random.seed(cfg.train.seed)
+            random.seed(cfg.train.seed)
+
+        elif cfg.model.fig == "C":
+            if self.training:
+                torch.cuda.manual_seed_all(cfg.model.noise_seed)
+                torch.manual_seed(cfg.model.noise_seed)
+                np.random.seed(cfg.model.noise_seed)
+                random.seed(cfg.model.noise_seed)
+            else:
                 torch.cuda.manual_seed_all(cfg.train.seed)
                 torch.manual_seed(cfg.train.seed)
                 np.random.seed(cfg.train.seed)
                 random.seed(cfg.train.seed)
 
-            elif cfg.model.fig == "C":
-                if self.training:
-                    torch.cuda.manual_seed_all(cfg.model.noise_seed)
-                    torch.manual_seed(cfg.model.noise_seed)
-                    np.random.seed(cfg.model.noise_seed)
-                    random.seed(cfg.model.noise_seed)
-                else:
-                    torch.cuda.manual_seed_all(cfg.train.seed)
-                    torch.manual_seed(cfg.train.seed)
-                    np.random.seed(cfg.train.seed)
-                    random.seed(cfg.train.seed)
+            self.decoders.apply(weight_add_noise)
 
-                layer.apply(weight_add_noise)
-
+        for ii, layer_key in enumerate(self.decoders):
+            layer = self.decoders[layer_key]
             if ii == 0:
                 dec_map_list.append(layer(enc_map_list[0]))
                 continue
             dec_map_list.append(layer(enc_map_list[ii:], dec_map_list))
 
-            layer.apply(weight_recover)
+        self.decoders.apply(weight_recover)
         return dec_map_list
 
 
