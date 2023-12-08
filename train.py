@@ -118,6 +118,7 @@ class Trainer:
         for i, batch in pbar:
             self.warmup()
             imgs, masks = batch[0].to(device), batch[1].to(device, dtype=torch.long)
+            self.global_iter += batch_size
             with amp.autocast():
                 preds = model(imgs)
                 loss, batch_loss_dict = self.criterion(preds, masks)
@@ -127,7 +128,6 @@ class Trainer:
                 self.scaler.step(self.optimizer)
                 self.scaler.update()
                 self.optimizer.zero_grad()
-        self.global_iter += 1
         pbar.close()
 
     def end_train_epoch(self):
@@ -155,7 +155,7 @@ class Trainer:
     def warmup(self):
         ni = self.global_iter
 
-        warmup_iters = self.cfg.warmup_iters
+        warmup_iters = max(self.cfg.warmup_iters, len(self.train_loader.dataset) * 3)
         if ni <= warmup_iters:
             xi = [0, warmup_iters]  # x interp
             for j, x in enumerate(self.optimizer.param_groups):
@@ -190,7 +190,6 @@ class Trainer:
 
         for k, v in self.val_score_dict.items():
             if k == "Class IoU":
-                self.logger.cmd_logger.info(v)
                 continue
             log_dict["Val"][k] = v
         print(f"=============Training===============")
@@ -203,7 +202,7 @@ class Trainer:
         print(f"Mean Acc: {log_dict['Val']['Mean Acc']}")
         print(f"FreqW Acc: {self.val_score_dict['FreqW Acc']}")
         print(f"Class IoU: {self.val_score_dict['Class IoU']}")
-        self.logger.summary(log_dict, self.global_iter)
+        self.logger.summary(log_dict, self.global_iter // len(self.train_loader.dataset))
 
     def validate(self):
         """Do validation and return specified samples"""
