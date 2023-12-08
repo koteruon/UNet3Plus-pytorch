@@ -1,4 +1,3 @@
-import copy
 import os
 import os.path as osp
 import random
@@ -173,7 +172,7 @@ class U3PDecoder(nn.Module):
                     np.random.seed(cfg.train.seed)
                     random.seed(cfg.train.seed)
 
-            layer.apply(weight_add_noise)
+                layer.apply(weight_add_noise)
 
             if ii == 0:
                 dec_map_list.append(layer(enc_map_list[0]))
