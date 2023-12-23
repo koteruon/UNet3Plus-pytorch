@@ -6,6 +6,10 @@ temp.ipynb
 
 runs/*
 runs_A/*
+runs_compare/*
+runs_back_up/*
+runs_back_up_kang/*
+runs_back_up_chaoen/*
 checkpoints
 logs
 wandb
@@ -14,5 +18,7 @@ VOCdevkit
 __pycache__
 
 .vscode
+model.pth
+weight_track.csv
 
 tensorboard --logdir=runs

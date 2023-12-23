@@ -190,10 +190,18 @@ class Trainer:
 
         for k, v in self.val_score_dict.items():
             if k == "Class IoU":
-                print(v)
-                # self.logger.cmd_logger.info(v)
                 continue
             log_dict["Val"][k] = v
+        print(f"=============Training===============")
+        print(f"head_focal_loss: {log_dict['Train']['head_focal_loss']}")
+        print(f"aux_focal_loss: {log_dict['Train']['aux_focal_loss']}")
+        print(f"total_loss: {log_dict['Train']['total_loss']}")
+        print(f"=============Validation================")
+        print(f"head_focal_loss: {log_dict['Val']['head_focal_loss']}")
+        print(f"Overall Acc: {log_dict['Val']['Overall Acc']}")
+        print(f"Mean Acc: {log_dict['Val']['Mean Acc']}")
+        print(f"FreqW Acc: {self.val_score_dict['FreqW Acc']}")
+        print(f"Class IoU: {self.val_score_dict['Class IoU']}")
         self.logger.summary(log_dict, self.global_iter // len(self.train_loader.dataset))
 
     def validate(self):
@@ -242,15 +250,20 @@ def main(args):
     import numpy as np
     import torch
 
-    seed = 42
-    torch.cuda.manual_seed_all(seed)
-    torch.manual_seed(seed)
-    random.seed(seed)
-    np.random.seed(seed)
+    torch.cuda.manual_seed_all(cfg.train.seed)
+    torch.manual_seed(cfg.train.seed)
+    random.seed(cfg.train.seed)
+    np.random.seed(cfg.train.seed)
 
     model, data = cfg.model, cfg.data
     model = build_unet3plus(
-        data.num_classes, model.encoder, model.skip_ch, model.aux_losses, model.use_cgm, model.pretrained, model.dropout
+        data.num_classes,
+        model.encoder,
+        model.skip_ch,
+        model.aux_losses,
+        model.use_cgm,
+        model.weights,
+        model.dropout,
     )
     # model = UNet_3Plus_DeepSup()
     if data.type in ["voc2012", "voc2012_aug"]:

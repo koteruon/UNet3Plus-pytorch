@@ -6,6 +6,7 @@ import torch.nn as nn
 from torchvision.models import ResNet, resnet18, resnet34, resnet50, resnet101
 from torchvision.models.feature_extraction import create_feature_extractor, get_graph_node_names
 
+from config.config import cfg
 from utils.weight_add_noise import weight_add_noise
 from utils.weight_clone import weight_clone
 from utils.weight_init import weight_init
@@ -46,7 +47,7 @@ class U3PResNetEncoder(nn.Module):
             resnet.apply(weight_init)
         self.backbone = create_feature_extractor(resnet, return_nodes=resnet_cfg["return_nodes"])
 
-        # print(resnet)
+        # print(self.resnet)
         # input = torch.randn(1, 3, 320, 320)
         # out = self.backbone(input)
 
@@ -60,13 +61,17 @@ class U3PResNetEncoder(nn.Module):
 
     def forward(self, x):
         self.backbone.apply(weight_clone)
-
-        self.backbone.apply(weight_add_noise)
+        if cfg.model.fig == "A":
+            if self.training:
+                self.backbone.apply(weight_add_noise)
+        elif cfg.model.fig == "C":
+            self.backbone.apply(weight_add_noise)
 
         out = self.backbone(x)
         for ii, compress in enumerate(self.compress_convs):
             out[f"layer{ii}"] = compress(out[f"layer{ii}"])
         out = [v for _, v in out.items()]
+
         self.backbone.apply(weight_recover)
         return out
 
@@ -81,7 +86,7 @@ def build_unet3plus(
         transpose_final = False
         fast_up = False
     elif encoder in resnets:
-        encoder = U3PResNetEncoder(backbone=encoder, pretrained=pretrained)
+        encoder = U3PResNetEncoder(backbone=encoder, weights=weights)
         transpose_final = True
         fast_up = True
     else:

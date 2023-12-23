@@ -1,0 +1,36 @@
+model:
+  encoder: resnet34
+  skip_ch: 64
+  aux_losses: 2
+  dropout: 0.0
+  weights: None
+  noise_seed: 42
+  n_tr: 0.08
+  alpha: 2.0
+  fig: A
+
+data:
+  type: voc2012_aug
+  num_classes: 21
+  num_workers: 0
+  batch_size: 16
+  max_training_samples: -1
+
+train:
+  seed: 42
+  epochs: 20
+  lr: 0.0002
+  weight_decay: 0.0005
+  optimizer: adamw
+  accum_steps: 4
+  resume: ''
+  save_name: u3p_resnet34_voc_focal_epochs_20_no_warm_up_add_noise_8_e-2
+  loss_type: focal
+  warmup_iters: 0
+
+  logger:
+    use_tensorboard: True
+    log_dir: ./runs
+
+
+
