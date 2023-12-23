@@ -3,6 +3,7 @@ model:
   skip_ch: 64
   aux_losses: 2
   pretrained: True
+  n_tr: 0.08
 
 data:
   type: voc2012_aug
@@ -10,7 +11,7 @@ data:
   num_workers: 0
   batch_size: 16
   max_training_samples: -1
-  
+
 train:
   seed: 42
   epochs: 52
@@ -19,13 +20,10 @@ train:
   optimizer: adamw
   accum_steps: 4
   resume: ''
-  save_name: u3p_resnet34_voc_focal
+  save_name: u3p_resnet34_voc_focal_epochs_52_imagenet1k_v2_add_noise_8_e-2
   loss_type: focal
   warmup_iters: 3000
 
   logger:
     use_tensorboard: True
     log_dir: ./runs
-
-
-  

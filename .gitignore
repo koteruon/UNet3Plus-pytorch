@@ -5,6 +5,7 @@
 temp.ipynb
 
 runs/*
+runs_A/*
 checkpoints
 logs
 wandb
