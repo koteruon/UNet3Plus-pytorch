@@ -151,11 +151,12 @@ def main(args):
     import numpy as np
     import torch
 
-    seed = 42
-    torch.cuda.manual_seed_all(seed)
-    torch.manual_seed(seed)
-    random.seed(seed)
-    np.random.seed(seed)
+    torch.cuda.set_per_process_memory_fraction(cfg.model.memory)
+
+    torch.cuda.manual_seed_all(cfg.test.seed)
+    torch.manual_seed(cfg.test.seed)
+    random.seed(cfg.test.seed)
+    np.random.seed(cfg.test.seed)
 
     model, data = cfg.model, cfg.data
     model = build_unet3plus(

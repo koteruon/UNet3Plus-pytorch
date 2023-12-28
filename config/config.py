@@ -14,6 +14,7 @@ cfg.model.noise_seed = 42
 cfg.model.n_tr = 0.02
 cfg.model.alpha = 2.0
 cfg.model.fig = "A"
+cfg.model.memory = 0.8
 
 # DATA
 cfg.data = CN()

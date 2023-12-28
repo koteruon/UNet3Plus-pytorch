@@ -251,6 +251,8 @@ def main(args):
     import numpy as np
     import torch
 
+    torch.cuda.set_per_process_memory_fraction(cfg.model.memory)
+
     torch.cuda.manual_seed_all(cfg.train.seed)
     torch.manual_seed(cfg.train.seed)
     random.seed(cfg.train.seed)

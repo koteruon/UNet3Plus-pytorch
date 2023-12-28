@@ -30,8 +30,8 @@ train:
 
 test:
   seed: 42
-  weight: ./runs_backup/u3p_resnet34_voc_focal_epochs_52_imagenet1k_v2_add_noise_0/u3p_resnet34_voc_focal_last.ckpt
-  save_name: u3p_resnet34_voc_focal_epochs_52_imagenet1k_v2_add_noise_0_e-2
+  weight: ./runs_backup/u3p_resnet34_voc_focal_epochs_52_imagenet1k_v2_add_noise_11_e-2_seed_46/u3p_resnet34_voc_focal_last.ckpt
+  save_name: u3p_resnet34_voc_focal_epochs_52_imagenet1k_v2_add_noise_11_e-2_seed_46
   loss_type: focal
 
   logger:
