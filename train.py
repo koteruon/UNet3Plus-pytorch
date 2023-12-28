@@ -6,6 +6,7 @@ import os.path as osp
 import numpy as np
 import torch
 from torch.cuda import amp
+from torch.nn.parallel import DataParallel
 from torch.optim import SGD, Adam, AdamW, lr_scheduler
 from torch.utils.data import DataLoader
 from tqdm import tqdm
@@ -265,6 +266,12 @@ def main(args):
         model.pretrained,
         model.dropout,
     )
+
+    # Wrap the model with DataParallel
+    if torch.cuda.device_count() > 1:
+        print(f"Using {torch.cuda.device_count()} GPUs for training.")
+        model = DataParallel(model)
+
     # model = UNet_3Plus_DeepSup()
     if data.type in ["voc2012", "voc2012_aug"]:
         train_loader, val_loader = build_data_loader(
