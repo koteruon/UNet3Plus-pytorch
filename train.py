@@ -262,7 +262,7 @@ def main(args):
         model.skip_ch,
         model.aux_losses,
         model.use_cgm,
-        model.weights,
+        model.pretrained,
         model.dropout,
     )
     # model = UNet_3Plus_DeepSup()
