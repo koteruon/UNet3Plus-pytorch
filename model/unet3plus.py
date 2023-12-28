@@ -9,6 +9,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+from config.config import cfg
+
 sys.path.append(osp.dirname(osp.dirname(__file__)))
 
 from utils.weight_add_noise import weight_add_noise
@@ -142,8 +144,10 @@ class U3PDecoder(nn.Module):
         dec_map_list = []
         enc_map_list = enc_map_list[::-1]
         self.decoders.apply(weight_clone)
-
-        if self.training:
+        if cfg.model.fig == "A":
+            if self.training:
+                self.decoders.apply(weight_add_noise)
+        elif cfg.model.fig == "C":
             self.decoders.apply(weight_add_noise)
 
         for ii, layer_key in enumerate(self.decoders):
@@ -216,10 +220,12 @@ class UNet3Plus(nn.Module):
                 for ii, de in enumerate(de_out[:-1]):
                     if ii == 0:
                         if self.cls is not None:
+                            # 分類數量大於2
                             pred["cls"] = self.cls(de).squeeze_()
                             have_obj = torch.argmax(pred["cls"])
                     head_key = f"aux_head{ii}"
                     if head_key in self.aux_head:
+                        # 只觀察最外兩層decoder的loss
                         de: torch.Tensor = de * have_obj
                         pred[f"aux{ii}"] = self.resize(self.aux_head[head_key](de), h, w)
         return pred

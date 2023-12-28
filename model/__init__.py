@@ -6,6 +6,7 @@ import torch.nn as nn
 from torchvision.models import ResNet, resnet18, resnet34, resnet50, resnet101
 from torchvision.models.feature_extraction import create_feature_extractor, get_graph_node_names
 
+from config.config import cfg
 from utils.weight_add_noise import weight_add_noise
 from utils.weight_clone import weight_clone
 from utils.weight_init import weight_init
@@ -46,7 +47,7 @@ class U3PResNetEncoder(nn.Module):
             resnet.apply(weight_init)
         self.backbone = create_feature_extractor(resnet, return_nodes=resnet_cfg["return_nodes"])
 
-        # print(resnet)
+        # print(self.resnet)
         # input = torch.randn(1, 3, 320, 320)
         # out = self.backbone(input)
 
@@ -60,8 +61,10 @@ class U3PResNetEncoder(nn.Module):
 
     def forward(self, x):
         self.backbone.apply(weight_clone)
-
-        if self.training:
+        if cfg.model.fig == "A":
+            if self.training:
+                self.backbone.apply(weight_add_noise)
+        elif cfg.model.fig == "C":
             self.backbone.apply(weight_add_noise)
 
         out = self.backbone(x)
