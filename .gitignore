@@ -5,6 +5,8 @@
 temp.ipynb
 
 runs/*
+runs_backup/*
+test_runs/*
 runs_A/*
 runs_C/*
 runs_compare/*

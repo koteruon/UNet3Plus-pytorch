@@ -71,7 +71,6 @@ class U3PResNetEncoder(nn.Module):
         for ii, compress in enumerate(self.compress_convs):
             out[f"layer{ii}"] = compress(out[f"layer{ii}"])
         out = [v for _, v in out.items()]
-
         self.backbone.apply(weight_recover)
         return out
 
@@ -86,7 +85,7 @@ def build_unet3plus(
         transpose_final = False
         fast_up = False
     elif encoder in resnets:
-        encoder = U3PResNetEncoder(backbone=encoder, weights=weights)
+        encoder = U3PResNetEncoder(backbone=encoder, pretrained=pretrained)
         transpose_final = True
         fast_up = True
     else:

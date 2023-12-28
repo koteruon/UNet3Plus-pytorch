@@ -63,3 +63,26 @@ cfg.train.logger.use_wandb = False
 cfg.train.logger.wandb = CN()
 cfg.train.logger.wandb.project = "UNet3Plus"
 cfg.train.logger.wandb.run_id = ""
+
+# HYPERPARAMETERS
+cfg.test = CN()
+cfg.test.seed = 42
+cfg.test.device = "cuda"
+cfg.test.weight = ""
+cfg.test.aux_weight = 0.4
+cfg.test.loss_type = "focal"
+cfg.test.save_name = "UNet3Plus"
+
+# LOGGING
+cfg.test.logger = CN()
+cfg.test.logger.log_dir = "./test_runs"
+
+# tensorboard setting
+cfg.test.logger.use_tensorboard = True
+cfg.test.logger.tensorboard = CN()
+
+# wandb setting
+cfg.test.logger.use_wandb = False
+cfg.test.logger.wandb = CN()
+cfg.test.logger.wandb.project = "UNet3Plus"
+cfg.test.logger.wandb.run_id = ""
