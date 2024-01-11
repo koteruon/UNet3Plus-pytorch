@@ -103,10 +103,10 @@ class Tester:
         pbar = tqdm(pbar, total=len(self.val_loader), bar_format="{l_bar}{bar:10}{r_bar}{bar:-10b}")  # progress bar
         with torch.no_grad():
             for i, (images, labels) in pbar:
-                image_filename = [os.path.basename(f) for f in self.val_loader.dataset.images]
-                if i == 810 // self.val_loader.batch_size:
-                    image = Image.open(self.val_loader.dataset.images[810]).convert("RGB")
-                    image.save(os.path.basename(self.val_loader.dataset.images[810]))
+                # image_filename = [os.path.basename(f) for f in self.val_loader.dataset.images]
+                # if i == 810 // self.val_loader.batch_size:
+                #     image = Image.open(self.val_loader.dataset.images[810]).convert("RGB")
+                #     image.save(os.path.basename(self.val_loader.dataset.images[810]))
                 images = images.to(device)
 
                 labels = labels.to(device, dtype=torch.long)
@@ -115,16 +115,16 @@ class Tester:
 
                 preds = outputs.detach().max(dim=1)[1].cpu().numpy()
                 targets = labels.cpu().numpy()
-                if i == 810 // self.val_loader.batch_size:
-                    cmap = plt.get_cmap("nipy_spectral", 22)
-                    image = cmap(preds[810 % self.val_loader.batch_size])
-                    plt.imshow(image)
-                    filename, extension = os.path.splitext(os.path.basename(self.val_loader.dataset.images[810]))
-                    plt.savefig(filename + "_preds" + extension)
+                # if i == 810 // self.val_loader.batch_size:
+                #     cmap = plt.get_cmap("nipy_spectral", 22)
+                #     image = cmap(preds[810 % self.val_loader.batch_size])
+                #     plt.imshow(image)
+                #     filename, extension = os.path.splitext(os.path.basename(self.val_loader.dataset.images[810]))
+                #     plt.savefig(filename + "_preds" + extension)
 
-                    image = cmap(targets[810 % self.val_loader.batch_size])
-                    plt.imshow(image)
-                    plt.savefig(filename + "_label" + extension)
+                #     image = cmap(targets[810 % self.val_loader.batch_size])
+                #     plt.imshow(image)
+                #     plt.savefig(filename + "_label" + extension)
                 self.metrics.update(targets, preds)
 
                 _, batch_loss_dict = self.criterion(outputs, labels)
@@ -138,7 +138,7 @@ class Tester:
 def main(args):
     cfg.merge_from_file(args.cfg)
     if args.seed is not None:
-        cfg.train.seed = int(args.seed)
+        cfg.test.seed = int(args.seed)
     if args.data_dir:
         cfg.data.data_dir = args.data_dir
     if args.weight:

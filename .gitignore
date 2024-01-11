@@ -13,6 +13,7 @@ runs_compare/*
 runs_back_up/*
 runs_back_up_kang/*
 runs_back_up_chaoen/*
+no_used_runs/*
 checkpoints
 logs
 wandb
