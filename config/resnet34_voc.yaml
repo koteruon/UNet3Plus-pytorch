@@ -14,14 +14,14 @@ data:
   max_training_samples: -1
 
 train:
-  seed: 50
+  seed: 47
   epochs: 52
   lr: 0.0002
   weight_decay: 0.0005
   optimizer: adamw
   accum_steps: 4
   resume: ''
-  save_name: u3p_resnet34_voc_focal_epochs_52_imagenet1k_v2_add_noise_1_e-2_seed_50
+  save_name: u3p_resnet34_voc_focal_epochs_52_imagenet1k_v2_add_noise_1_e-2_seed_47
   loss_type: focal
   warmup_iters: 3000
 
@@ -30,9 +30,9 @@ train:
     log_dir: ./runs
 
 test:
-  seed: 49
-  weight: ./runs_backup/u3p_resnet34_voc_focal_epochs_52_imagenet1k_v2_add_noise_12_e-2_seed_49/u3p_resnet34_voc_focal_epochs_52_imagenet1k_v2_add_noise_12_e-2_seed_49_last.ckpt
-  save_name: u3p_resnet34_voc_focal_epochs_52_imagenet1k_v2_add_noise_12_e-2_seed_49
+  seed: 47
+  weight: ./runs_backup/u3p_resnet34_voc_focal_epochs_52_imagenet1k_v2_add_noise_12_e-2_seed_47/u3p_resnet34_voc_focal_epochs_52_imagenet1k_v2_add_noise_12_e-2_seed_47_last.ckpt
+  save_name: u3p_resnet34_voc_focal_epochs_52_imagenet1k_v2_add_noise_12_e-2_seed_47
   loss_type: focal
 
   logger:
