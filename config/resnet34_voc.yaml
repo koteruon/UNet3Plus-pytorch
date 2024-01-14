@@ -3,7 +3,7 @@ model:
   skip_ch: 64
   aux_losses: 2
   pretrained: True
-  n_tr: 0.01
+  n_tr: 0.07
   fig: A
 
 data:
@@ -21,7 +21,7 @@ train:
   optimizer: adamw
   accum_steps: 4
   resume: ''
-  save_name: u3p_resnet34_voc_focal_epochs_52_imagenet1k_v2_add_noise_1_e-2_seed_47
+  save_name: u3p_resnet34_voc_focal_epochs_52_imagenet1k_v2_add_noise_7_e-2_seed_47
   loss_type: focal
   warmup_iters: 3000
 
