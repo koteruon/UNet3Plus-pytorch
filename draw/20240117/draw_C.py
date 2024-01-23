@@ -4,38 +4,33 @@ import numpy as np
 # 第一組資料 seed 42
 data1 = {
     "X": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-    "Y": [73.46, 73.55, 73.68, 73.77, 73.81, 74.06, 74.04, 73.36, 73.32, 73.11, 72.90, 72.11, 72.13],
+    "Y": [73.46, 73.22, 72.49, 71.70, 70.72, 69.40, 68.43, 66.35, 64.71, 63.59, 61.40, 60.10, 58.34],
 }
 
 # 第二組資料 seed 46
 data2 = {
     "X": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-    "Y": [72.61, 73.19, 73.07, 73.12, 72.65, 73.25, 73.00, 72.14, 72.38, 72.24, 72.05, 72.42, 71.90],
+    "Y": [72.61, 72.79, 71.83, 70.80, 70.24, 69.35, 67.83, 66.22, 65.51, 63.54, 62.57, 61.44, 59.95],
 }
 
 # 第三組資料 seed 49
 data3 = {
     "X": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-    "Y": [73.19, 73.20, 73.41, 73.67, 73.32, 73.56, 73.36, 73.53, 73.67, 72.90, 72.60, 72.45, 72.03],
+    "Y": [73.19, 72.92, 72.58, 71.59, 70.34, 69.39, 68.36, 67.22, 65.92, 63.97, 62.17, 60.12, 58.37],
 }
 
 # 第四組資料 seed 47
 data4 = {
-    "X": [0, 1, 2, 3, 4, 7, 8, 11, 12],
-    "Y": [73.27, 72.65, 73.21, 72.96, 72.83, 72.62, 72.57, 71.52, 71.61],
+    "X": [],
+    "Y": [],
 }
 
 # 第五組資料 seed 50
 data5 = {
     "X": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-    "Y": [73.14, 73.50, 73.73, 73.53, 73.61, 73.28, 73.86, 73.03, 72.88, 72.46, 72.43, 71.56, 71.45],
+    "Y": [73.14, 73.29, 72.66, 71.32, 70.76, 69.37, 68.55, 66.97, 66.15, 63.67, 62.13, 60.30, 57.68],
 }
 
-# 第六組資料 seed 54
-data6 = {
-    "X": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-    "Y": [73.20, 73.38, 73.36, 73.39, 73.73, 73.19, 73.38, 73.12, 73.02, 72.13, 72.00, 72.45, 71.76],
-}
 # Calculate mean and standard error of the mean (SEM) for each X value
 mean_y_values = []
 sem_y_values = []
@@ -47,7 +42,6 @@ for x in data1["X"]:
         + [data3["Y"][i] for i, val in enumerate(data3["X"]) if val == x]
         # + [data4["Y"][i] for i, val in enumerate(data4["X"]) if val == x]
         + [data5["Y"][i] for i, val in enumerate(data5["X"]) if val == x]
-        + [data6["Y"][i] for i, val in enumerate(data6["X"]) if val == x]
     )
 
     mean_y = np.mean(y_values)
@@ -61,10 +55,10 @@ plt.errorbar(data1["X"], mean_y_values, yerr=sem_y_values, fmt="s", capsize=5, m
 
 # Add a horizontal dashed line for average at X-axis 0
 plt.axhline(y=mean_y_values[0], color="gray", linestyle="--")
-
-# Set axis labels
-plt.xlabel("Relative Training Noise n_tr (%)")
+# 加上標題和軸標籤
+# plt.title('Relative Training Noise vs. Mean IoU')
+plt.xlabel("Relative Noise n_tr = n_inf (%)")
 plt.ylabel("Mean IoU (%)")
 
 # 儲存圖片
-plt.savefig("fig_A.png")
+plt.savefig("fig_C.png")

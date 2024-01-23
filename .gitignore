@@ -14,6 +14,8 @@ runs_back_up/*
 runs_back_up_kang/*
 runs_back_up_chaoen/*
 no_used_runs/*
+已儲存/*
+重複實驗/*
 checkpoints
 logs
 wandb

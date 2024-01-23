@@ -28,14 +28,9 @@ data4 = {
 # 第五組資料 seed 50
 data5 = {
     "X": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-    "Y": [73.14, 73.50, 73.73, 73.53, 73.61, 73.28, 73.86, 73.03, 72.88, 72.46, 72.43, 71.56, 71.45],
+    "Y": [73.14, 73.50, 73.73, 73.53, 73.61, 73.28, 73.86, 73.21, 72.88, 72.46, 72.43, 71.49, 71.88],
 }
 
-# 第六組資料 seed 54
-data6 = {
-    "X": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-    "Y": [73.20, 73.38, 73.36, 73.39, 73.73, 73.19, 73.38, 73.12, 73.02, 72.13, 72.00, 72.45, 71.76],
-}
 # Calculate mean and standard error of the mean (SEM) for each X value
 mean_y_values = []
 sem_y_values = []
@@ -47,7 +42,6 @@ for x in data1["X"]:
         + [data3["Y"][i] for i, val in enumerate(data3["X"]) if val == x]
         # + [data4["Y"][i] for i, val in enumerate(data4["X"]) if val == x]
         + [data5["Y"][i] for i, val in enumerate(data5["X"]) if val == x]
-        + [data6["Y"][i] for i, val in enumerate(data6["X"]) if val == x]
     )
 
     mean_y = np.mean(y_values)
