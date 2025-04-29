@@ -125,10 +125,13 @@ By following this methodology, the model's behavior under perturbations can be s
 
 The segmentation results on the **Semantic Boundaries Dataset (SBD)** confirm that the UNet3+ model, even when subjected to weight perturbations, is capable of **maintaining high segmentation accuracy**, thus validating the effectiveness of the proposed perturbation strategy.
 
-![Weight-Noise-Training-Inference-Accuracy](./Enhancing-UNet3Plus-Robustness-with-Weight-Perturbation/Weight-Noise-Training-Inference-Accuracy.png)
+![Weight-Noise-Only-Training-IoU](./Enhancing-UNet3Plus-Robustness-with-Weight-Perturbation/Weight-Noise-Only-Training-IoU.png)
 
-> _The influence of injecting weight noise during the training and/or inference on network accuracy._
+> _The influence of injecting weight noise only during the training on network accuracy._
 
+![Weight-Noise-Training-Inference-IoU](./Enhancing-UNet3Plus-Robustness-with-Weight-Perturbation/Weight-Noise-Training-Inference-IoU.png)
+
+> _The influence of injecting weight noise during the training and inference on network accuracy._
 
 ## Discussion and Future Work
 
