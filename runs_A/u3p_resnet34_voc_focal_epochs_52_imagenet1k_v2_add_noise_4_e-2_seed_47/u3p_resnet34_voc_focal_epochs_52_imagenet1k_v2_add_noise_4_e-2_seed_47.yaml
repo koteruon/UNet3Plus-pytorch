@@ -1,0 +1,25 @@
+accum_steps: 4
+aux_weight: 0.4
+device: cuda
+epochs: 52
+logger:
+  log_dir: ./runs
+  tensorboard: {}
+  use_tensorboard: true
+  use_wandb: false
+  wandb:
+    project: UNet3Plus
+    run_id: ''
+loss_type: focal
+lr: 0.0002
+lrf: 0.0005
+momentum: 0.9
+nesterov: true
+optimizer: adamw
+resume: ''
+save_name: u3p_resnet34_voc_focal_epochs_52_imagenet1k_v2_add_noise_4_e-2_seed_47
+scheduler: cyclic
+seed: 47
+val_interval: 1
+warmup_iters: 3000
+weight_decay: 0.0005

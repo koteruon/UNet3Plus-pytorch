@@ -7,8 +7,8 @@ temp.ipynb
 runs/*
 runs_backup/*
 test_runs/*
-runs_A/*
-runs_C/*
+runs_A/**/*.ckpt
+runs_C/**/*.ckpt
 runs_compare/*
 runs_back_up/*
 runs_back_up_kang/*
