@@ -13,7 +13,11 @@ runs_compare/*
 runs_back_up/*
 runs_back_up_kang/*
 runs_back_up_chaoen/*
+no_noise_inference/*
+no_noise_inference_tmp/*
 no_used_runs/*
+已儲存/*
+重複實驗/*
 checkpoints
 logs
 wandb
@@ -26,3 +30,6 @@ model.pth
 weight_track.csv
 
 tensorboard --logdir=runs
+
+init_model.pth
+init_model_2.pth

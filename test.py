@@ -3,6 +3,7 @@ import math
 import os
 import os.path as osp
 
+import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
@@ -12,6 +13,7 @@ from torch.optim import SGD, Adam, AdamW, lr_scheduler
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
+from colormap import colors, colors_tmp
 from config.config import cfg
 from datasets import build_data_loader
 from model import UNet3Plus, build_unet3plus
@@ -103,28 +105,57 @@ class Tester:
         pbar = tqdm(pbar, total=len(self.val_loader), bar_format="{l_bar}{bar:10}{r_bar}{bar:-10b}")  # progress bar
         with torch.no_grad():
             for i, (images, labels) in pbar:
-                # image_filename = [os.path.basename(f) for f in self.val_loader.dataset.images]
-                # if i == 810 // self.val_loader.batch_size:
-                #     image = Image.open(self.val_loader.dataset.images[810]).convert("RGB")
-                #     image.save(os.path.basename(self.val_loader.dataset.images[810]))
+                # 取得所有的測試圖片名稱
+                image_filename = [os.path.splitext(os.path.basename(f))[0] for f in self.val_loader.dataset.images]
+                target_filename = "2008_006008"
+                target_index = image_filename.index(target_filename)
+
+                # 將圖片儲存一次
+                for index in range(i * self.val_loader.batch_size, (i + 1) * self.val_loader.batch_size):
+                    if index >= len(self.val_loader.dataset.images):
+                        continue
+                    # if index != target_index:
+                    #     continue
+                    image = Image.open(self.val_loader.dataset.images[index]).convert("RGB")
+                    image.save(
+                        os.path.join("no_noise_inference", os.path.basename(self.val_loader.dataset.images[index]))
+                    )
+
+                # 進行預測
                 images = images.to(device)
-
                 labels = labels.to(device, dtype=torch.long)
-
                 outputs = self.model(images)
-
                 preds = outputs.detach().max(dim=1)[1].cpu().numpy()
                 targets = labels.cpu().numpy()
-                # if i == 810 // self.val_loader.batch_size:
-                #     cmap = plt.get_cmap("nipy_spectral", 22)
-                #     image = cmap(preds[810 % self.val_loader.batch_size])
-                #     plt.imshow(image)
-                #     filename, extension = os.path.splitext(os.path.basename(self.val_loader.dataset.images[810]))
-                #     plt.savefig(filename + "_preds" + extension)
 
-                #     image = cmap(targets[810 % self.val_loader.batch_size])
-                #     plt.imshow(image)
-                #     plt.savefig(filename + "_label" + extension)
+                # 繪製預測
+                for index in range(i * self.val_loader.batch_size, (i + 1) * self.val_loader.batch_size):
+                    if index >= len(self.val_loader.dataset.images):
+                        continue
+                    # if index != target_index:
+                    #     continue
+                    filename, extension = os.path.splitext(os.path.basename(self.val_loader.dataset.images[index]))
+
+                    # label的圖片
+                    targets_image = targets[index % self.val_loader.batch_size]
+                    targets_image[targets_image == 255] = 0
+                    targets_unique_cls = np.unique(targets_image)
+                    targets_color_mask = np.isin(np.arange(21), targets_unique_cls)
+                    targets_colors = np.copy(colors_tmp)
+                    targets_colors[~targets_color_mask] = targets_colors[0]
+                    targets_rgb_image = targets_colors[targets_image]
+                    targets_rgb_image = targets_rgb_image.astype(np.uint8)
+                    targets_bgr_image = cv2.cvtColor(targets_rgb_image, cv2.COLOR_RGB2BGR)
+                    cv2.imwrite(os.path.join("no_noise_inference", filename + "_label" + extension), targets_bgr_image)
+
+                    # predict的圖片
+                    preds_colors = np.copy(targets_colors)
+                    preds_image = preds[index % self.val_loader.batch_size]
+                    preds_rgb_image = preds_colors[preds_image]
+                    preds_rgb_image = preds_rgb_image.astype(np.uint8)
+                    preds_bgr_image = cv2.cvtColor(preds_rgb_image, cv2.COLOR_RGB2BGR)
+                    cv2.imwrite(os.path.join("no_noise_inference", filename + "_preds" + extension), preds_bgr_image)
+
                 self.metrics.update(targets, preds)
 
                 _, batch_loss_dict = self.criterion(outputs, labels)
