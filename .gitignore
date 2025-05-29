@@ -25,7 +25,6 @@ VOC2012
 VOCdevkit
 __pycache__
 
-.vscode
 model.pth
 weight_track.csv
 
